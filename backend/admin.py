@@ -1,17 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from backend.models import CustomUser, Shop, Category, Product, ProductInfo, \
+from backend.models import Users, Shop, Category, Product, ProductInfo, \
                             Parameter, ProductParameter, Order, OrderItem, \
                             Contact, ConfirmEmailToken
 
 
-@admin.register(CustomUser)
+@admin.register(Users)
 class CustomUserAdmin(UserAdmin):
     """
     Панель управления пользователями
     """
-    model = CustomUser
+    model = Users
 
     fieldsets = (
         (None, {'fields': ('email', 'username' 'password', 'type')}),
@@ -19,7 +19,7 @@ class CustomUserAdmin(UserAdmin):
                                       'position')}),
         ('Permissions', {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups',
-                       'user_permissions'),
+                       'permissions'),
         }),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )

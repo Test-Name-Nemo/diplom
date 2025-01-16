@@ -1,7 +1,8 @@
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
-from rest_framework.response import JsonResponse, Response
+from django.http import JsonResponse
+from rest_framework.response import Response
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate

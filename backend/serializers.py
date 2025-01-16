@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend.models import CustomUser, Category, Shop, ProductInfo, Product, \
+from backend.models import Users, Category, Shop, ProductInfo, Product, \
     ProductParameter, OrderItem, Order, Contact
 
 
@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
     contacts = ContactSerializer(read_only=True, many=True)
 
     class Meta:
-        model = CustomUser
+        model = Users
         fields = ('id', 'first_name', 'last_name', 'email', 'company',
                   'position', 'contacts')
         read_only_fields = ('id',)

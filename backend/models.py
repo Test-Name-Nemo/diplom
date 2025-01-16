@@ -44,10 +44,10 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(user, email, password, **extra_fields)
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class Users(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIEDS = []
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIEDS = ['email']
     email = models.EmailField('E-mail', unique=True)
     company = models.CharField('Компания', max_length=30, blank=True)
     posicion = models.CharField('Должность', max_length=30, blank=True)
@@ -73,7 +73,7 @@ class Shop(models.Model):
     objects = models.manager.Manager()
     name = models.CharField(max_length=50, verbose_name='Название')
     url = models.URLField(verbose_name='Ссылка', null=True, blank=True)
-    user = models.OneToOneField(CustomUser, verbose_name='Пользователь',
+    user = models.OneToOneField(Users, verbose_name='Пользователь',
                                 blank=True, null=True,
                                 on_delete=models.CASCADE)
     state = models.BooleanField(verbose_name='статус получения заказов',
@@ -178,7 +178,7 @@ class ProductParameter(models.Model):
 class Contact(models.Model):
     objects = models.manager.Manager()
     user = models.ForeignKey(
-        CustomUser, verbose_name='Пользователь', related_name='contacts',
+        Users, verbose_name='Пользователь', related_name='contacts',
         blank=True, on_delete=models.CASCADE)
     city = models.CharField('Город', max_length=50)
     street = models.CharField('Улица', max_length=100)
@@ -198,7 +198,7 @@ class Contact(models.Model):
 
 class Order(models.Model):
     objects = models.manager.Manager()
-    user = models.ForeignKey(CustomUser, verbose_name='Пользователь',
+    user = models.ForeignKey(Users, verbose_name='Пользователь',
                              related_name='orders',
                              blank=True, on_delete=models.CASCADE)
     dt = models.DateTimeField(auto_now_add=True)
@@ -247,7 +247,7 @@ class ConfirmEmailToken(models.Model):
             hexlify """
         return get_token_generator().generate_token()
     user = models.ForeignKey(
-        CustomUser, related_name='confirm_email_tokens',
+        Users, related_name='confirm_email_tokens',
         on_delete=models.CASCADE, verbose_name=("Пользователь, который связан \
                                                 с паролем сброса токена"))
     created_at = models.DateTimeField('Дата генерации токена',
