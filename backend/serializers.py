@@ -7,7 +7,7 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ('id', 'city', 'street', 'house', 'structure', 'building',
-                  'apartment', 'user', 'phone')
+                  'apartment', 'phone')
         read_only_fields = ('id',)
         extra_kwargs = {
             'user': {'write_only': True}
@@ -19,8 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Users
-        fields = ('id', 'first_name', 'last_name', 'email', 'company',
-                  'position', 'contacts')
+        fields = ('first_name', 'last_name', 'email', 'company',
+                  'position', 'contacts',)
         read_only_fields = ('id',)
 
 

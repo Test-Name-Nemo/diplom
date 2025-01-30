@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from backend.models import Users, Shop, Category, Product, ProductInfo, \
-                            Parameter, ProductParameter, Order, OrderItem, \
-                            Contact, ConfirmEmailToken
+from backend.models import (
+    Users, Shop, Category, Product, ProductInfo, Parameter, ProductParameter,
+    Order, OrderItem, Contact, ConfirmEmailToken)
 
 
 @admin.register(Users)
@@ -23,7 +23,8 @@ class CustomUserAdmin(UserAdmin):
         }),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
-    list_display = ('email', 'username', 'is_staff')
+    list_display = ('first_name', 'last_name', 'email', 'position', 'company',
+                    'is_staff', 'is_active')
 
 
 @admin.register(Shop)
@@ -33,17 +34,20 @@ class ShopAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    pass
+    model = Category
+    list_display = ('id', 'name',)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    model = Product
+    list_displey = ('name',)
 
 
 @admin.register(ProductInfo)
 class ProductInfoAdmin(admin.ModelAdmin):
-    pass
+    model = ProductInfo
+    list_displey = ('model', 'product', 'quantity', 'price', 'price_rcc',)
 
 
 @admin.register(Parameter)
@@ -68,9 +72,9 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("city", "street", "house", "apartment", "phone",)
 
 
 @admin.register(ConfirmEmailToken)
 class ConfirmEmailTokenAdmin(admin.ModelAdmin):
-    list_display = ('user', 'key', 'created_at',)
+    list_display = ('user', 'key', 'created_at')
