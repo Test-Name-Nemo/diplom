@@ -22,7 +22,6 @@ def password_reset_token_created(sender, instance, reset_password_token,
     :return:
     """
     # send an e-mail to the user
-
     msg = EmailMultiAlternatives(
         f"Password Reset Token for {reset_password_token.user}",
         reset_password_token.key,
