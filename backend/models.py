@@ -192,10 +192,10 @@ class Contact(models.Model):
         blank=True, on_delete=models.CASCADE)
     city = models.CharField('Город', max_length=50)
     street = models.CharField('Улица', max_length=100)
-    house = models.CharField('Дом', max_length=15, blank=True)
+    house = models.CharField('Дом', max_length=15)
     structure = models.CharField('Корпус', max_length=10, blank=True)
     building = models.CharField('Строение', max_length=10, blank=True)
-    apartment = models.CharField('Квартира', max_length=10, blank=True)
+    apartment = models.CharField('Квартира', max_length=10)
     phone = models.CharField('Телефон', max_length=20)
 
     class Meta:

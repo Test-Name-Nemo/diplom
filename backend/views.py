@@ -17,7 +17,7 @@ from backend.models import Shop, Category, Product, ProductInfo, Parameter, \
 from backend.serializers import UserSerializer, CategorySerializer, \
     ShopSerializer, ProductInfoSerializer, OrderItemSerializer, \
     OrderSerializer, ContactSerializer
-from backend.signals import new_user_registered, new_order
+from backend.signals import new_order
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -28,7 +28,7 @@ class RegisterAccount(APIView):
 
     def post(self, request, *args, **kwargs):
         if {'first_name', 'last_name', 'email', 'password', 'company',
-            'position'}.issubset(request.data):
+                'position'}.issubset(request.data):
             # Проверяем наличие дубликатов email
             try:
                 validate_password(request.data['password'])
@@ -54,7 +54,8 @@ class RegisterAccount(APIView):
 
 class ConfirmAccount(APIView):
 
-    """Класс для подтверждения регистрации""" 
+    """Класс для подтверждения регистрации"""
+
     def post(self, request, *args, **kwargs):
         if all(key in request.data for key in ['email', 'token']):
             token = ConfirmEmailToken.objects.filter(
@@ -112,7 +113,7 @@ class AccountDetails(APIView):
                 return JsonResponse({'Status': False, 'Errors': {
                     'password': error_array}})
             else:
-                request.user.set_password(request.data['password'])
+                request.users.set_password(request.data['password'])
 
         # проверка остальных данных
         user_serializer = UserSerializer(request.user, data=request.data,
@@ -144,7 +145,7 @@ class PartnerUpdate(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        if request.user.type != 'shop':
+        if request.user.type != 'buyer':
             return JsonResponse({'Status': False, 'Error': 'Только для \
                                  магазинов'}, status=403)
         url = request.data.get('url')
@@ -222,13 +223,14 @@ class BasketView(APIView):
             user_id=request.user.id, state='basket').prefetch_related(
             'ordered_items__product_info__product__category',
             'ordered_items__product_info__product_parameters__parameter'
-            ).annotate(total_sum=Sum(F('ordered_items__quantity') * F(
-                'ordered_items__product_info__price'))).distinct()
+        ).annotate(total_sum=Sum(F('ordered_items__quantity') * F(
+            'ordered_items__product_info__price'))).distinct()
 
         serializer = OrderSerializer(basket, many=True)
         return Response(serializer.data)
 
     '''редактировать корзину'''
+
     def post(self, request, *args, **kwargs):
         items_sting = request.data.get('items')
         if items_sting:
@@ -261,6 +263,7 @@ class BasketView(APIView):
                              необходимые аргументы'})
 
     ''' удалить товары из корзины'''
+
     def delete(self, request, *args, **kwargs):
         items_sting = request.data.get('items')
         if items_sting:
@@ -282,6 +285,7 @@ class BasketView(APIView):
                              необходимые аргументы'})
 
     '''добавить позиции товара в корзину'''
+
     def put(self, request, *args, **kwargs):
         items_sting = request.data.get('items')
         if items_sting:
@@ -364,6 +368,7 @@ class ContactView(APIView):
     permission_classes = [IsAuthenticated]
 
     'Получить контакты'
+
     def get(self, request, *args, **kwargs):
         contact = Contact.objects.filter(
             user_id=request.user.id)
@@ -371,18 +376,22 @@ class ContactView(APIView):
         return Response(serializer.data)
 
     'добавить новый контакт'
+
     def post(self, request, *args, **kwargs):
         # Проверяем наличие необходимых данных
         if all(key in request.data for key in ['city', 'street', 'phone']):
             # Создаем новый словарь для данных
             data = request.data.copy()  # Создадим копию request.data
-            data.update({'user': request.user.id})  # Добавляем идентификатор пользователя
-            serializer = ContactSerializer(data=data)  # Передаем данные сериализатору
+            # Добавляем идентификатор пользователя
+            data.update({'user': request.user.id})
+            # Передаем данные сериализатору
+            serializer = ContactSerializer(data=data)
             # Проверяем валидность данных
             if serializer.is_valid():
                 try:
                     serializer.save()  # Сохраняем данные
-                    return JsonResponse({'Status': True}, status=201)  # Создание успешно завершено
+                    # Создание успешно завершено
+                    return JsonResponse({'Status': True}, status=201)
                 except Exception as e:
                     return JsonResponse({'Status': False, 'Errors': 'Ошибка при сохранении данных: {}'.format(str(e))}, status=500)
             else:
@@ -391,6 +400,7 @@ class ContactView(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'}, status=400)
 
     'удалить контакт'
+
     def delete(self, request, *args, **kwargs):
         items_sting = request.data.get('items')
         if items_sting:
@@ -410,6 +420,7 @@ class ContactView(APIView):
                              необходимые аргументы'})
 
     'редактировать контакт'
+
     def put(self, request, *args, **kwargs):
         if 'id' in request.data:
             if request.data['id'].isdigit():
@@ -434,6 +445,7 @@ class OrderView(APIView):
     '''Класс, получения заказов пользователями'''
     permission_classes = [IsAuthenticated]
     '''Получение списка  заказанных товаров'''
+
     def get(self, request, *args, **kwargs):
         order = Order.objects.filter(
             user_id=request.user.id).exclude(state='basket').prefetch_related(
@@ -447,6 +459,7 @@ class OrderView(APIView):
         return Response(serializer.data)
 
     '''Функция подтверждения заказа'''
+
     def post(self, request, *args, **kwargs):
         if {'id', 'contact'}.issubset(request.data):
             if request.data['id'].isdigit():
