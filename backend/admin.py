@@ -29,30 +29,34 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'name', 'user', 'state']
+    search_fields = ('name',)
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     model = Category
-    list_display = ('id', 'name',)
+    list_display = ['id', 'name']
+    search_fields = ('name',)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    model = Product
-    list_displey = ('name',)
+    list_display = ['id', 'name', 'category', 'model', 'external_id', 'shop',
+                    'quantity', 'price', 'price_rrc']
+    search_fields = ('name', 'model',)
 
 
 @admin.register(ProductInfo)
 class ProductInfoAdmin(admin.ModelAdmin):
     model = ProductInfo
-    list_displey = ('model', 'product', 'quantity', 'price', 'price_rcc',)
+    pass
 
 
 @admin.register(Parameter)
 class ParameterAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'product', 'parameter', 'value']
+    search_fields = ('product',)
 
 
 @admin.register(ProductParameter)
@@ -62,12 +66,16 @@ class ProductParameterAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'user', 'status', 'contact', 'created', 'updated']
+    search_fields = ('status',)
 
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'order', 'category', 'shop', 'product_name',
+                    'external_id', 'quantity', 'price',
+                    'total_amount']
+    search_fields = ('order',)
 
 
 @admin.register(Contact)
