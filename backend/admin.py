@@ -42,8 +42,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'category', 'model', 'external_id', 'shop',
-                    'quantity', 'price', 'price_rrc']
+    list_display = ['id', 'name', 'category', 'model']
     search_fields = ('name', 'model',)
 
 
@@ -55,7 +54,7 @@ class ProductInfoAdmin(admin.ModelAdmin):
 
 @admin.register(Parameter)
 class ParameterAdmin(admin.ModelAdmin):
-    list_display = ['id', 'product', 'parameter', 'value']
+    list_display = ['id']
     search_fields = ('product',)
 
 
@@ -66,15 +65,13 @@ class ProductParameterAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'status', 'contact', 'created', 'updated']
+    list_display = ['id', 'user', 'contact']
     search_fields = ('status',)
 
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ['id', 'order', 'category', 'shop', 'product_name',
-                    'external_id', 'quantity', 'price',
-                    'total_amount']
+    list_display = ['id', 'order', 'quantity']
     search_fields = ('order',)
 
 
