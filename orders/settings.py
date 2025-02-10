@@ -41,16 +41,19 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_rest_passwordreset',
+    'silk',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'silk.middleware.SilkyMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+   
 ]
 
 ROOT_URLCONF = 'orders.urls'
@@ -144,6 +147,12 @@ REST_FRAMEWORK = {
     ),
 
 }
+# ...
+
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
