@@ -4,9 +4,23 @@ from django.contrib.auth.admin import UserAdmin
 from backend.models import (
     Users, Shop, Category, Product, ProductInfo, Parameter, ProductParameter,
     Order, OrderItem, Contact, ConfirmEmailToken)
+from django.http import HttpResponseRedirect
+from backend.tasks import do_import
 
 
-@admin.register(Users)
+class ImportAdmin(admin.ModelAdmin):
+    def import_data(self, request, queryset):
+        do_import.delay()
+        self.message_user(request, "Import task has been started.")
+        return HttpResponseRedirect("../")
+    import_data.short_description = "Start import task"
+    actions = [import_data]
+
+
+# admin.site.register(Users, ImportAdmin)
+
+
+@admin.register(Users, ImportAdmin)
 class CustomUserAdmin(UserAdmin):
     """
     Панель управления пользователями
