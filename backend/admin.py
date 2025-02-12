@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 
 from backend.models import (
     Users, Shop, Category, Product, ProductInfo, Parameter, ProductParameter,
@@ -13,22 +12,25 @@ class ImportAdmin(admin.ModelAdmin):
         do_import.delay()
         self.message_user(request, "Import task has been started.")
         return HttpResponseRedirect("../")
+
     import_data.short_description = "Start import task"
     actions = [import_data]
 
+# Удалите существующую регистрацию модели Users
+    try:
+        admin.site.unregister(Users)
+    except admin.sites.NotRegistered:
+        pass
 
-# admin.site.register(Users, ImportAdmin)
 
-
-@admin.register(Users, ImportAdmin)
-class CustomUserAdmin(UserAdmin):
+@admin.register(Users)
+class CustomUserAdmin(ImportAdmin):
     """
     Панель управления пользователями
     """
     model = Users
-
     fieldsets = (
-        (None, {'fields': ('email', 'username' 'password', 'type')}),
+        (None, {'fields': ('email', 'username', 'password', 'type')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'company',
                                       'position')}),
         ('Permissions', {
