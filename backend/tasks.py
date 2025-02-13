@@ -5,7 +5,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.validators import URLValidator
 from django.db import IntegrityError
 from yaml import load as load_yaml, Loader
-
 from backend.models import Shop, Category, Product, Parameter, \
     ProductParameter, ProductInfo
 from orders.celery import celery_app
